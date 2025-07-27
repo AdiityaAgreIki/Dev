@@ -20,8 +20,8 @@ if command -v apt &> /dev/null; then
         apt install -y tesseract-ocr tesseract-ocr-eng python3-venv python3-pip
     else
         echo "Installing Tesseract OCR (requires sudo)..."
-        sudo apt update
-        sudo apt install -y tesseract-ocr tesseract-ocr-eng python3-venv python3-pip
+        apt update
+        apt install -y tesseract-ocr tesseract-ocr-eng python3-venv python3-pip
     fi
 elif command -v yum &> /dev/null; then
     # CentOS/RHEL/Fedora
@@ -29,7 +29,7 @@ elif command -v yum &> /dev/null; then
     if [ "$EUID" -eq 0 ]; then
         yum install -y tesseract tesseract-langpack-eng python3 python3-pip python3-venv
     else
-        sudo yum install -y tesseract tesseract-langpack-eng python3 python3-pip python3-venv
+        yum install -y tesseract tesseract-langpack-eng python3 python3-pip python3-venv
     fi
 elif command -v dnf &> /dev/null; then
     # Fedora
@@ -37,7 +37,7 @@ elif command -v dnf &> /dev/null; then
     if [ "$EUID" -eq 0 ]; then
         dnf install -y tesseract tesseract-langpack-eng python3 python3-pip python3-venv
     else
-        sudo dnf install -y tesseract tesseract-langpack-eng python3 python3-pip python3-venv
+        dnf install -y tesseract tesseract-langpack-eng python3 python3-pip python3-venv
     fi
 elif command -v pacman &> /dev/null; then
     # Arch Linux
@@ -45,7 +45,7 @@ elif command -v pacman &> /dev/null; then
     if [ "$EUID" -eq 0 ]; then
         pacman -S --noconfirm tesseract tesseract-data-eng python python-pip
     else
-        sudo pacman -S --noconfirm tesseract tesseract-data-eng python python-pip
+        pacman -S --noconfirm tesseract tesseract-data-eng python python-pip
     fi
 else
     echo "Package manager not detected. Please install Tesseract OCR manually:"
