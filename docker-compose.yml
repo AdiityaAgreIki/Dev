@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  diet-server:
+    build: .
+    container_name: diet-server
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      # Optional: Mount for logs or data persistence
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+
+networks:
+  default:
+    name: diet-server-network
