@@ -10,15 +10,15 @@
       "type": "n8n-nodes-base.whatsAppTrigger",
       "typeVersion": 1,
       "position": [
-        0,
-        -55
+        -816,
+        192
       ],
-      "id": "b6e6547d-def0-4658-ba84-b6c0cc5fe2ae",
+      "id": "b1860f56-faf7-4918-a251-d79ebda38b37",
       "name": "WhatsApp Trigger",
       "webhookId": "49152842-f68e-43b3-8632-1f5671fa7f47",
       "credentials": {
         "whatsAppTriggerApi": {
-          "id": "hrOT8uGMFnORezNQ",
+          "id": "1SzaQ9IiNFsHFRJT",
           "name": "WhatsApp OAuth account"
         }
       }
@@ -31,7 +31,7 @@
         "messages": {
           "messageValues": [
             {
-              "message": "Answer Honestly"
+              "message": "You are an intelligent and friendly assistant designed to assist clients of Dr. Priyanka, a dietitian. Your primary role is to provide concise and relevant responses to client inquiries related to dietary concerns and nutrition.  Your task is to engage with users by greeting them and offering support with their dietary questions. When someone initiates a conversation with \"Hi,\" you should respond by introducing yourself as Dr. Priyanka's assistant.  ---  Please keep your answers short and to the point, focusing on clarity and helpfulness.   ---  For example, if a user asks about meal planning, you might respond with a brief suggestion or tip.   ---  Ensure that your responses are informative but avoid overwhelming the user with too much information at once. Maintain a professional yet approachable tone throughout.  ---  Avoid using medical jargon unless necessary, and always prioritize user understanding. If you encounter a question outside your expertise, politely advise the user to consult Dr. Priyanka directly for more personalized assistance."
             }
           ]
         },
@@ -40,10 +40,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        220,
-        -180
+        304,
+        0
       ],
-      "id": "1d0ce3d1-0223-4e8a-b956-7296657d6fe6",
+      "id": "18c05628-4eb3-4a11-88de-a227236aab51",
       "name": "Basic LLM Chain"
     },
     {
@@ -54,14 +54,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        320,
-        140
+        400,
+        224
       ],
-      "id": "66c2ca9f-d0bd-46e2-9180-1ad1cdbd677a",
+      "id": "1eada3d4-b398-4408-b068-2ed2ec5cf8c1",
       "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
-          "id": "b4iQ5CqOk6T7izJq",
+          "id": "GkiC20L8kIpjGwTo",
           "name": "Google Gemini(PaLM) Api account"
         }
       }
@@ -70,38 +70,280 @@
       "parameters": {
         "operation": "send",
         "phoneNumberId": "727728480420011",
-        "recipientPhoneNumber": "=919579341477",
-        "textBody": "={{ $json.text }}",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $('Basic LLM Chain').first().json.text }}",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.whatsApp",
       "typeVersion": 1,
       "position": [
-        596,
-        -55
+        704,
+        112
       ],
-      "id": "6128234d-6458-49eb-a658-87fbe59fe1e0",
+      "id": "3699b31c-d2ba-4398-86ad-c2dae9e2a6d1",
       "name": "Send message",
       "webhookId": "f018479e-fd95-43a1-a14d-754004ca5c7a",
       "credentials": {
         "whatsAppApi": {
-          "id": "MZ9B0NHF1RjenhHg",
+          "id": "iS2jmQ7y1T99quwo",
           "name": "WhatsApp account"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {}
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "96355a4b-0298-4617-8e67-1950dc992a70",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
       "position": [
-        580,
-        -180
+        -144,
+        512
       ],
-      "id": "e2e3065e-d2c3-4f91-8a4a-400665136447",
-      "name": "Code"
+      "typeVersion": 4.2,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "iS2jmQ7y1T99quwo",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $('WhatsApp Trigger').item.json.messages[0].image.id }}"
+      },
+      "id": "91e9fc1e-df34-44a8-a535-813fa2065378",
+      "name": "Get Image Url",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        -368,
+        512
+      ],
+      "webhookId": "280bd5de-32d7-4d8f-93d2-e91e3b0bc161",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "iS2jmQ7y1T99quwo",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "08fd0c80-307e-4f45-b1de-35192ee4ec5e",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.messages[0].text.body }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "202af928-a324-411a-bf15-68a349e7bf9e",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.messages[0].image }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "645ff20c-d6f4-4edc-9277-5635a16b39af",
+      "name": "Input type",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -592,
+        288
+      ],
+      "typeVersion": 3.2,
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": false,
+      "notesInFlow": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://c2d39e2c46ce.ngrok-free.app/extract_report",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "=data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        512
+      ],
+      "id": "c7fc9f86-4153-48e0-92fa-7a7102022b1d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an intelligent and friendly assistant you wil receive a json, convert that json to natural language and output all details. Just output details nothing else "
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        304,
+        512
+      ],
+      "id": "91084c4f-2513-4959-b893-79e2a7c8c5d2",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        400,
+        736
+      ],
+      "id": "f601a11d-5192-4939-bae2-ac60217e2e68",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GkiC20L8kIpjGwTo",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "727728480420011",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $('Basic LLM Chain1').first().json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        656,
+        512
+      ],
+      "id": "a66ad61b-e700-4494-aaf7-eddab1e05348",
+      "name": "Send message1",
+      "webhookId": "b7395d3d-d900-4022-85c5-564fbe685afb",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "iS2jmQ7y1T99quwo",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "reports",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "data",
+              "fieldValue": "={{ $('HTTP Request').first().json }}"
+            },
+            {
+              "fieldId": "phone_number",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.contacts.first().wa_id }}"
+            },
+            {
+              "fieldId": "wa_id",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        240,
+        912
+      ],
+      "id": "47006410-0c5b-4fb3-a07e-262c3276762e",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "A6uwf75TksSW8KPs",
+          "name": "Supabase account"
+        }
+      }
     }
   ],
   "connections": {
@@ -109,7 +351,7 @@
       "main": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Input type",
             "type": "main",
             "index": 0
           }
@@ -121,11 +363,6 @@
         [
           {
             "node": "Send message",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Code",
             "type": "main",
             "index": 0
           }
@@ -142,11 +379,90 @@
           }
         ]
       ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image Url": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input type": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Image Url",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Send message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "81e1d8b7382f21f19f50cd5055b7da6bb6999aa03523b46cb8877dc30d92fa3f"
+    "instanceId": "d525e24969ca9ee0274b9e139b1a9d3e8498b61cf85193b0f197d3c97fd51937"
   }
 }
